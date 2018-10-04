@@ -11,7 +11,10 @@ import java.util.Iterator;
 public class DBexcel {
     public static String exec(String name, String query) {
 
-        String result = "";
+        String[] resul = new String[1];
+        StringBuilder result = new StringBuilder().append("");
+        int k = 0;
+
         InputStream in = null;
         HSSFWorkbook wb = null;
         try {
@@ -24,6 +27,8 @@ public class DBexcel {
         Sheet sheet = wb.getSheetAt(0);
         Iterator<Row> it = sheet.iterator();
         while (it.hasNext()) {
+            if (k == 1)
+                break;
             Row row = it.next();
             Iterator<Cell> cells = row.iterator();
             while (cells.hasNext()) {
@@ -31,23 +36,31 @@ public class DBexcel {
                 int cellType = cell.getCellType();
                 switch (cellType) {
                     case Cell.CELL_TYPE_STRING:
-                        result += cell.getStringCellValue() + "=";
+                        resul[0] = cell.getStringCellValue();
+                        if (resul[0].equals(query)) {
+                            result.append(cell.getStringCellValue() + " =");
+                            ++k;
+                        }
+
                         break;
+
                     case Cell.CELL_TYPE_NUMERIC:
-                        result += "[" + cell.getNumericCellValue() + "]";
+                        if (k == 1)
+                            result.append("[" + cell.getNumericCellValue() + "]");
                         break;
 
                     case Cell.CELL_TYPE_FORMULA:
-                        result += "[" + cell.getNumericCellValue() + "]";
+                        if (k == 1)
+                            result.append("[" + cell.getNumericCellValue() + "]");
                         break;
                     default:
-                        result += "|";
+                        result.append("|");
                         break;
                 }
             }
-            result += "\n";
         }
 
-        return result;
+        return result.toString();
     }
 }
+
