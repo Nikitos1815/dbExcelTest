@@ -18,15 +18,16 @@ public class bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        counter = 0;
+
        bot test = new bot();
         if (update.hasMessage() && update.getMessage().hasText()) {
             String message_text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
             if (update.getMessage().getText().equals("/start")) {
-            test.Keyboard(chat_id,update);
+            test.Keyboard(chat_id);
 
-            } else {switch(counter) {
+            } else {
+                /*switch(counter) {
                 case 1:
                     SendMessage message = new SendMessage() // Create a message object object
                             .setChatId(chat_id)
@@ -44,7 +45,7 @@ public class bot extends TelegramLongPollingBot {
 
                 case 4:
 
-                case 0:
+               default:
                     SendMessage new_message = new SendMessage()
                             .setChatId(chat_id)
                             .setText("Введите /start или выберите пункт меню" + "\n");
@@ -54,7 +55,17 @@ public class bot extends TelegramLongPollingBot {
                         e.printStackTrace();
                     }
 
-            }
+            }*/
+                if(counter == 1){
+                    SendMessage message = new SendMessage() // Create a message object object
+                            .setChatId(chat_id)
+                            .setText(DBexcel.exec("testfile.xls", message_text));
+                    try {
+                        execute(message); // Sending our message object to user
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }else if (update.hasCallbackQuery()){
             test.Callback(update);
@@ -77,7 +88,7 @@ public class bot extends TelegramLongPollingBot {
         return "624724125:AAEZKWtsxN5AJUhXxg6AEIqpjWxopKCo268";
     }
 
-    public void Keyboard(long chat_id, Update update1) {
+    public void Keyboard(long chat_id) {
         SendMessage message = new SendMessage() // Create a message object object
                 .setChatId(chat_id)
                 .setText("Добро пожаловать!");
