@@ -11,23 +11,35 @@ import java.lang.*;
 import static java.lang.Math.toIntExact;
 
 
+
 public class bot extends TelegramLongPollingBot {
     private String username;
     private long id;
     private int counter;
+    private UserDB reg = new UserDB();
 
     @Override
     public void onUpdateReceived(Update update) {
 
-       bot test = new bot();
+
         if (update.hasMessage() && update.getMessage().hasText()) {
             String message_text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
+            username = update.getMessage().getChat().getUserName();
+            id = update.getMessage().getChat().getId();
+            reg.Registration(username,id);
             if (update.getMessage().getText().equals("/start")) {
-            test.Keyboard(chat_id);
+                SendMessage message2 = Keyboard(chat_id);
+            Keyboard(chat_id);
+            counter = 1;
+                try {
+                    execute(message2); // Sending our message object to user
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
 
             } else {
-                /*switch(counter) {
+                switch(counter) {
                 case 1:
                     SendMessage message = new SendMessage() // Create a message object object
                             .setChatId(chat_id)
@@ -55,8 +67,8 @@ public class bot extends TelegramLongPollingBot {
                         e.printStackTrace();
                     }
 
-            }*/
-                if(counter == 1){
+            }
+               /* if(counter == 1){
                     SendMessage message = new SendMessage() // Create a message object object
                             .setChatId(chat_id)
                             .setText(DBexcel.exec("testfile.xls", message_text));
@@ -65,10 +77,15 @@ public class bot extends TelegramLongPollingBot {
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
             }
         }else if (update.hasCallbackQuery()){
-            test.Callback(update);
+            SendMessage message = Callback(update);
+            try {
+                execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
             }
         }
 
@@ -88,7 +105,7 @@ public class bot extends TelegramLongPollingBot {
         return "624724125:AAEZKWtsxN5AJUhXxg6AEIqpjWxopKCo268";
     }
 
-    public void Keyboard(long chat_id) {
+    public static SendMessage Keyboard(long chat_id) {
         SendMessage message = new SendMessage() // Create a message object object
                 .setChatId(chat_id)
                 .setText("Добро пожаловать!");
@@ -108,60 +125,37 @@ public class bot extends TelegramLongPollingBot {
         // Add it to the message
         markupInline.setKeyboard(rowsInline);
         message.setReplyMarkup(markupInline);
-        try {
-            execute(message); // Sending our message object to user
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
-    public void Callback(Update update){
-        // Set variables
 
+        return message;
+    }
+    public static SendMessage Callback(Update update){
+        // Set variables
+        SendMessage new_message = new SendMessage();
         String call_data = update.getCallbackQuery().getData();
         long message_id = update.getCallbackQuery().getMessage().getMessageId();
         long chat_id = update.getCallbackQuery().getMessage().getChatId();
         if (call_data.equals("FIO")) {
-            counter = 1;
-            SendMessage new_message = new SendMessage()
-                    .setChatId(chat_id)
-                    .setText("Введите ФИО" + "\n");
-            try {
-                execute(new_message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+
+             new_message.setChatId(chat_id).setText("Введите ФИО" + "\n");
+
         }else if(call_data.equals("PhoneNumber")){
-            counter = 2;
-            SendMessage new_message = new SendMessage()
+
+             new_message
                     .setChatId(chat_id)
                     .setText("Введите номер телефона" + "\n");
-            try {
-                execute(new_message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
         }else if(call_data.equals("HomeAddress")){
-            counter = 3;
-            SendMessage new_message = new SendMessage()
+
+             new_message
                     .setChatId(chat_id)
                     .setText("Введите адрес" + "\n");
-            try {
-                execute(new_message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            return new_message;
         }else if(call_data.equals("E-mail")){
-            counter = 4;
-            SendMessage new_message = new SendMessage()
+             new_message
                     .setChatId(chat_id)
                     .setText("Введите E-mail" + "\n");
-            try {
-                execute(new_message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
 
+        }
+        return new_message;
     }
 }
 
