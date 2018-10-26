@@ -5,6 +5,8 @@ import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
+
+import javax.management.Query;
 import java.util.*;
 import java.lang.*;
 
@@ -25,9 +27,9 @@ public class bot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String message_text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
-            username = update.getMessage().getChat().getUserName();
-            id = update.getMessage().getChat().getId();
-            reg.Registration(username,id);
+            this.username = update.getMessage().getChat().getUserName();
+            this.id = update.getMessage().getChat().getId();
+            reg.Registration(this.username,this.id);
             if (update.getMessage().getText().equals("/start")) {
                 SendMessage message2 = Keyboard(chat_id);
             Keyboard(chat_id);
@@ -68,16 +70,7 @@ public class bot extends TelegramLongPollingBot {
                     }
 
             }
-               /* if(counter == 1){
-                    SendMessage message = new SendMessage() // Create a message object object
-                            .setChatId(chat_id)
-                            .setText(DBexcel.exec("testfile.xls", message_text));
-                    try {
-                        execute(message); // Sending our message object to user
-                    } catch (TelegramApiException e) {
-                        e.printStackTrace();
-                    }
-                }*/
+
             }
         }else if (update.hasCallbackQuery()){
             SendMessage message = Callback(update);
@@ -132,7 +125,7 @@ public class bot extends TelegramLongPollingBot {
         // Set variables
         SendMessage new_message = new SendMessage();
         String call_data = update.getCallbackQuery().getData();
-        long message_id = update.getCallbackQuery().getMessage().getMessageId();
+        long id = update.getMessage().getChat().getId();
         long chat_id = update.getCallbackQuery().getMessage().getChatId();
         if (call_data.equals("FIO")) {
 
@@ -143,6 +136,7 @@ public class bot extends TelegramLongPollingBot {
              new_message
                     .setChatId(chat_id)
                     .setText("Введите номер телефона" + "\n");
+
         }else if(call_data.equals("HomeAddress")){
 
              new_message
@@ -155,6 +149,7 @@ public class bot extends TelegramLongPollingBot {
                     .setText("Введите E-mail" + "\n");
 
         }
+
         return new_message;
     }
 }

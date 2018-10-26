@@ -6,6 +6,9 @@ import com.mongodb.client.MongoDatabase;
 import java.lang.*;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Updates.setOnInsert;
 
 public class UserDB {
 
@@ -34,8 +37,15 @@ public class UserDB {
         }
 
     }
-    public void Query(){
+    public void Query(String flag,long useRid){
 
+        try {
+    MongoCollection<org.bson.Document> collec = db.getCollection("userlist");
+    collec.updateOne(eq("Id:", useRid), set("Flag", flag));
+             }
+            catch (Exception e){
+                System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            }
     }
 
 }
