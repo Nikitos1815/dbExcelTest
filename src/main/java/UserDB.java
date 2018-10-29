@@ -5,10 +5,9 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.lang.*;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
-import static com.mongodb.client.model.Updates.setOnInsert;
 
 public class UserDB {
 
@@ -47,5 +46,32 @@ public class UserDB {
                 System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             }
     }
+    public void FlagDelete(long useRid){
+        try {
+            MongoCollection<org.bson.Document> collec = db.getCollection("userlist");
+            collec.updateOne(eq("Id:", useRid), set("Flag", ""));
+        }
+        catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+    }
+    public int FlagCheck(long useRid){
+        int check = 0;
+        try{
+            MongoCollection<org.bson.Document> collec = db.getCollection("userlist");
+            if(collec.find(and(eq("Id:",useRid),eq("Flag:","FIO"))) != null)
+                check = 1;
+            else if (collec.find(and(eq("Id:",useRid),eq("Flag:","Phone"))) != null)
+                check = 2;
+            else if(collec.find(and(eq("Id:",useRid),eq("Flag:","Address"))) != null)
+                check = 3;
+            else if(collec.find(and(eq("Id:",useRid),eq("Flag:","Mail"))) != null)
+                check = 4;
+        }
+        catch(Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return check;
+    }
+    }
 
-}
