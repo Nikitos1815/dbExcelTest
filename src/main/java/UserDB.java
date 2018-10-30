@@ -1,77 +1,72 @@
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+
 import java.lang.*;
 
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.set;
 
-public class UserDB {
+class UserDB {
+    public static final String ID = "id";
+    public static final String NAME = "name";
+    public static final String FLAG = "flag";
 
-    protected  MongoClient mongoClient;
-    protected MongoDatabase db;
-    public UserDB(){
-        mongoClient = new MongoClient( "localhost" , 27017 );
-        db = mongoClient.getDatabase("userdb_queries");
+    private MongoCollection<Document> collec;
+
+    public UserDB(MongoDatabase db) {
+        collec = db.getCollection("userlist");
     }
 
-
-
-    public  void Registration(String username, long useRid){
-        try{
-            MongoCollection<org.bson.Document> collec = db.getCollection("userlist");
-            org.bson.Document doublecheck = collec.find(eq("Id:", useRid)).first();
-            if(doublecheck == null){
-                org.bson.Document doc = new org.bson.Document()
-                        .append("Name:",username).append("Id:", useRid);
+    public void registration(String username, long useRid) {
+        try {
+            Document doublecheck = collec.find(eq(ID, useRid)).first();
+            if (doublecheck == null) {
+                Document doc = new Document()
+                    .append(NAME, username).append(ID, useRid);
                 collec.insertOne(doc);
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        catch(Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-        }
-
     }
-    public void Query(String flag,long useRid){
+
+    public void query(String flag, long useRid) {
 
         try {
-    MongoCollection<org.bson.Document> collec = db.getCollection("userlist");
-    collec.updateOne(eq("Id:", useRid), set("Flag", flag));
-             }
-            catch (Exception e){
-                System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            }
+            collec.updateOne(eq(ID, useRid), set(FLAG, flag));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    public void FlagDelete(long useRid){
+
+    public void flagDelete(long useRid) {
         try {
-            MongoCollection<org.bson.Document> collec = db.getCollection("userlist");
-            collec.updateOne(eq("Id:", useRid), set("Flag", ""));
-        }
-        catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            collec.updateOne(eq(ID, useRid), set(FLAG, ""));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-    public int FlagCheck(long useRid){
+
+    public int flagCheck(long useRid) {
         int check = 0;
-        try{
-            MongoCollection<org.bson.Document> collec = db.getCollection("userlist");
-            if(collec.find(and(eq("Id:",useRid),eq("Flag:","FIO"))) != null)
+        try {
+            if (collec.find(and(eq(ID, useRid), eq(FLAG, "FIO"))) != null)
                 check = 1;
-            else if (collec.find(and(eq("Id:",useRid),eq("Flag:","Phone"))) != null)
+            else if (collec.find(and(eq(ID, useRid), eq(FLAG, "Phone"))) != null)
                 check = 2;
-            else if(collec.find(and(eq("Id:",useRid),eq("Flag:","Address"))) != null)
+            else if (collec.find(and(eq(ID, useRid), eq(FLAG, "Address"))) != null)
                 check = 3;
-            else if(collec.find(and(eq("Id:",useRid),eq("Flag:","Mail"))) != null)
+            else if (collec.find(and(eq(ID, useRid), eq(FLAG, "Mail"))) != null)
                 check = 4;
-        }
-        catch(Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return check;
     }
-    }
+}
 
