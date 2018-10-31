@@ -48,14 +48,38 @@ public class Bot extends TelegramLongPollingBot {
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         }
+                        break;
                     case 2:
-
-
+                        SendMessage message1 = new SendMessage() // Create a message object object
+                                .setChatId(chatId)
+                                .setText("Here will be phone number");
+                        try {
+                            execute(message1); // Sending our message object to user
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                        break;
                     case 3:
-
+                        SendMessage message2 = new SendMessage() // Create a message object object
+                                .setChatId(chatId)
+                                .setText("Here will be Address");
+                        try {
+                            execute(message2); // Sending our message object to user
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                        break;
 
                     case 4:
-
+                        SendMessage message3 = new SendMessage() // Create a message object object
+                                .setChatId(chatId)
+                                .setText("Here will be phone number");
+                        try {
+                            execute(message3); // Sending our message object to user
+                        } catch (TelegramApiException e) {
+                            e.printStackTrace();
+                        }
+                        break;
                     case 0:
                         SendMessage new_message = new SendMessage()
                             .setChatId(chatId)
@@ -65,6 +89,7 @@ public class Bot extends TelegramLongPollingBot {
                         } catch (TelegramApiException e) {
                             e.printStackTrace();
                         }
+                        break;
 
                 }
 

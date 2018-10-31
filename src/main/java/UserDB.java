@@ -52,7 +52,7 @@ class UserDB {
         }
     }
 
-    public int flagCheck(long useRid) {
+    public int flagCheck(Long useRid) {
         int check = 0;
         try {
             if (collec.find(and(eq(ID, useRid), eq(FLAG, "FIO"))) != null)
